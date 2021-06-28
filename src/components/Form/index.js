@@ -24,7 +24,6 @@ export default function Form() {
 
     const watchState = watch("state", "");
     const watchWorkplaceState = watch("workplaceState", "");
-    const watchIsWorkPlaceSameAsResidence = watch("isWorkPlaceSameAsResidence", false);
 
     const onSubmit = (data) => {
         console.log(data);
@@ -196,57 +195,105 @@ export default function Form() {
                     />
                 </Row>
                 <Row>
-                    <CheckBox
-                        label='Is Workplace address same as Resident Address?'
-                        hookForm={register('isWorkPlaceSameAsResidence')}
+                    <TextAreaBox
+                        label="Workplace Address"
+                        hookForm={register('workplaceAddress')}
+                        error={errors.workplaceAddress}
+                    />
+                    <Col md="6">
+                        <SelectInput
+                            label="State"
+                            hookForm={register("workplaceState")}
+                            arr={(function () {
+                                const stateNames = [];
+                                States.forEach((state) => {
+                                    stateNames.push(state.name);
+                                });
+                                return stateNames;
+                            })()}
+                            error={errors.workplaceState}
+                            mid="12"
+                        />
+                        <SelectInput
+                            label="District"
+                            hookForm={register("workplaceDistrict")}
+                            arr={(function () {
+                                if (!(!!watchWorkplaceState))
+                                    return [];
+                                const _state = StatesDistricts.find((elem) => elem.state === watchWorkplaceState);
+                                return _state.districts;
+                            })()}
+                            error={errors.workplaceDistrict}
+                            mid="12"
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Input
+                        label="Zip Code"
+                        error={errors.workplaceZipcode}
+                        hookForm={register('workplaceZipcode')}
                     />
                 </Row>
-                {!watchIsWorkPlaceSameAsResidence &&
-                    <>
-                        <Row>
-                            <TextAreaBox
-                                label="Workplace Address"
-                                hookForm={register('workplaceAddress')}
-                                error={errors.workplaceAddress}
-                            />
-                            <Col md="6">
-                                <SelectInput
-                                    label="State"
-                                    hookForm={register("workplaceState")}
-                                    arr={(function () {
-                                        const stateNames = [];
-                                        States.forEach((state) => {
-                                            stateNames.push(state.name);
-                                        });
-                                        return stateNames;
-                                    })()}
-                                    error={errors.workplaceState}
-                                    mid="12"
-                                />
-                                <SelectInput
-                                    label="District"
-                                    hookForm={register("workplaceDistrict")}
-                                    arr={(function () {
-                                        if (!(!!watchWorkplaceState))
-                                            return [];
-                                        const _state = StatesDistricts.find((elem) => elem.state === watchWorkplaceState);
-                                        return _state.districts;
-                                    })()}
-                                    error={errors.workplaceDistrict}
-                                    mid="12"
-                                />
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Input
-                                label="Zip Code"
-                                error={errors.workplaceZipcode}
-                                hookForm={register('workplaceZipcode')}
-                            />
-                        </Row>
-                    </>
-                }
                 <Heading>Document Details</Heading>
+                <Row>
+                    <FileUpload
+                        label="Applicant's Photo"
+                        hookForm={register('photo')}
+                        error={errors.photo}
+                    />
+                    <FileUpload
+                        label="Applicant's Signature"
+                        hookForm={register('signature')}
+                        error={errors.signature}
+                    />
+                    <FileUpload
+                        label="Degree Certificate"
+                        hookForm={register('degreeCertificate')}
+                        error={errors.degreeCertificate}
+                    />
+                </Row>
+                <Row>
+                    <FileUpload
+                        label="Transcript"
+                        hookForm={register('transcript')}
+                        error={errors.transcript}
+                    />
+                    <FileUpload
+                        label="Aadhar Card"
+                        hookForm={register('aadharCard')}
+                        error={errors.aadharCard}
+                    />
+                    <FileUpload
+                        label="ID Card"
+                        hookForm={register('idCard')}
+                        error={errors.idCard}
+                    />
+                </Row>
+                <Row>
+                    <FileUpload
+                        label="Date of Birth Proof"
+                        hookForm={register('dobProof')}
+                        error={errors.dobProof}
+                    />
+                    <FileUpload
+                        label="State Affidavit Proof"
+                        hookForm={register('affidavitProof')}
+                        error={errors.affidavitProof}
+                    />
+                    <FileUpload
+                        label="Magistrate's Affidavit"
+                        hookForm={register('affidavitMagistrate')}
+                        error={errors.affidavitMagistrate}
+                    />
+                </Row>
+                <Row>
+                    <FileUpload
+                        label="FIR Filed"
+                        hookForm={register('fir')}
+                        error={errors.fir}
+                    />
+                </Row>
                 <PrimaryButton label="Submit" />
             </FormComponent>
         </>

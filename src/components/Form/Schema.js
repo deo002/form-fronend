@@ -122,6 +122,86 @@ const schema = yup.object().shape({
         .matches(/^[0-9]*$/, "Zip Code not in desired format")
         .required("Zip Code cannot be empty")
         .length(6, "Zip Code not in desired format"),
+    photo: yup
+        .mixed()
+        .nullable()
+        .test('required', 'This field cannot be empty', (file) => {
+            if (file.length === 0)
+                return false;
+            return true;
+        }),
+    signature: yup
+        .mixed()
+        .nullable()
+        .test('required', 'This field cannot be empty', (file) => {
+            if (file.length === 0)
+                return false;
+            return true;
+        }),
+    degreeCertificate: yup
+        .mixed()
+        .nullable()
+        .test('required', 'This field cannot be empty', (file) => {
+            if (file.length === 0)
+                return false;
+            return true;
+        }),
+    transcript: yup
+        .mixed()
+        .nullable()
+        .test('required', 'This field cannot be empty', (file) => {
+            if (file.length === 0)
+                return false;
+            return true;
+        }),
+    aadharCard: yup
+        .mixed()
+        .nullable()
+        .test('required', 'This field cannot be empty', (file) => {
+            if (file.length === 0)
+                return false;
+            return true;
+        }),
+    idCard: yup
+        .mixed()
+        .nullable()
+        .test('required', 'This field cannot be empty', (file) => {
+            if (file.length === 0)
+                return false;
+            return true;
+        }),
+    dobProof: yup
+        .mixed()
+        .nullable()
+        .test('required', 'This field cannot be empty', (file) => {
+            if (file.length === 0)
+                return false;
+            return true;
+        }),
+    affidavitProof: yup
+        .mixed()
+        .nullable()
+        .test('required', 'This field cannot be empty', (file) => {
+            if (file.length === 0)
+                return false;
+            return true;
+        }),
+    affidavitMagistrate: yup
+        .mixed()
+        .nullable()
+        .test('required', 'This field cannot be empty', (file) => {
+            if (file.length === 0)
+                return false;
+            return true;
+        }),
+    fir: yup
+        .mixed()
+        .nullable()
+        .test('required', 'This field cannot be empty', (file) => {
+            if (file.length === 0)
+                return false;
+            return true;
+        }),
 });
 
 export default schema;
