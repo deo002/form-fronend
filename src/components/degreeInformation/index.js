@@ -12,6 +12,7 @@ import { Row } from 'react-bootstrap';
 import { useAuth } from '../../contexts/AuthContext';
 import apiCall from './ApiCall';
 import { useHistory } from 'react-router-dom';
+import { Alert } from 'react-bootstrap';
 
 export default function DegreeInformation() {
 
@@ -31,9 +32,10 @@ export default function DegreeInformation() {
 
         try {
             setLoading(true);
-
+            setErr('');
             const idToken = await getToken();
             const id = currentUser.uid;
+
 
             const payload = {
                 ...data,
@@ -60,6 +62,7 @@ export default function DegreeInformation() {
         <>
             <FormComponent onSubmit={handleSubmit(onSubmit)}>
                 <Heading>Educational Qualification</Heading>
+                <Alert variant="danger" show={!!err}>{err}</Alert>
                 <Row>
                     <Input
                         label="University Name"

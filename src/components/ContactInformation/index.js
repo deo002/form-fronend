@@ -14,6 +14,7 @@ import StatesDistricts from '../States-Districts.json';
 import { useAuth } from '../../contexts/AuthContext';
 import apiCall from './ApiCall';
 import { useHistory } from 'react-router-dom';
+import { Alert } from 'react-bootstrap';
 
 export default function ContactInformation() {
 
@@ -36,6 +37,7 @@ export default function ContactInformation() {
 
         try {
             setLoading(true);
+            setErr('');
 
             const idToken = await getToken();
             const id = currentUser.uid;
@@ -65,6 +67,7 @@ export default function ContactInformation() {
         <>
             <FormComponent onSubmit={handleSubmit(onSubmit)}>
                 <Heading>Contact Details</Heading>
+                <Alert variant="danger" show={!!err}>{err}</Alert>
                 <Row>
                     <Input
                         label="Mobile Number"

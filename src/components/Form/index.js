@@ -17,6 +17,7 @@ import CheckBox from '../CheckBox';
 import { useAuth } from '../../contexts/AuthContext';
 import apiCall from './ApiCall';
 import { useHistory } from 'react-router-dom';
+import { Alert } from 'react-bootstrap';
 
 export default function Form() {
 
@@ -39,6 +40,7 @@ export default function Form() {
 
         try {
             setLoading(true);
+            setErr('');
             const {
                 name,
                 fathersName,
@@ -138,8 +140,9 @@ export default function Form() {
 
     return (
         <>
-            <Heading>Personal Information</Heading>
             <FormComponentMultipart onSubmit={handleSubmit(onSubmit)}>
+                <Heading>Personal Information</Heading>
+                <Alert variant="danger" show={!!err}>{err}</Alert>
                 <Row>
                     <Input
                         label="Applicant's Name"

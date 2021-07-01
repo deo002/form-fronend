@@ -12,6 +12,7 @@ import { Row } from 'react-bootstrap';
 import { useAuth } from '../../contexts/AuthContext';
 import apiCall from './ApiCall';
 import { useHistory } from 'react-router-dom';
+import { Alert } from 'react-bootstrap';
 
 export default function PersonalInformation() {
 
@@ -31,6 +32,8 @@ export default function PersonalInformation() {
 
         try {
             setLoading(true);
+            setErr('');
+
             const idToken = await getToken();
             const id = currentUser.uid;
 
@@ -57,8 +60,9 @@ export default function PersonalInformation() {
 
     return (
         <>
-            <Heading>Personal Information</Heading>
             <FormComponent onSubmit={handleSubmit(onSubmit)}>
+                <Heading>Personal Information</Heading>
+                <Alert variant="danger" show={!!err}>{err}</Alert>
                 <Row>
                     <Input
                         label="Applicant's Name"
