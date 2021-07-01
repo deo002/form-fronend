@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import schema from './Schema';
@@ -9,6 +9,9 @@ import PrimaryButton from '../PrimaryButton';
 import FormComponent from '../FormComponent';
 import Heading from '../Heading';
 import { Row } from 'react-bootstrap';
+import { useAuth } from '../../contexts/AuthContext';
+import apiCall from './ApiCall';
+import { useHistory } from 'react-router-dom';
 
 export default function PersonalInformation() {
 
@@ -17,9 +20,40 @@ export default function PersonalInformation() {
         resolver: yupResolver(schema)
     });
 
-    const onSubmit = (data) => {
-        console.log(data);
+    const history = useHistory();
+
+    const { currentUser, getToken } = useAuth();
+
+    const [err, setErr] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const onSubmit = async (data) => {
+
+        try {
+            setLoading(true);
+            const idToken = await getToken();
+            const id = currentUser.uid;
+
+            const payload = {
+                ...data,
+                id
+            };
+
+            //  https://httpbin.org/anything
+            const res = await apiCall('http://localhost:1337/api/doctor/personal-information', payload, idToken);
+
+            if (!!res.error) {
+                throw Error(res.error);
+            }
+
+            history.push('/update');
+        } catch (e) {
+            setLoading(false);
+            setErr(e.message);
+        }
+
     };
+
 
     return (
         <>
@@ -91,7 +125,7 @@ export default function PersonalInformation() {
                         mid="3"
                     />
                 </Row>
-                <PrimaryButton label="Submit" />
+                <PrimaryButton state={loading} label="Submit" />
             </FormComponent>
         </>
     );

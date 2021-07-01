@@ -1,9 +1,38 @@
-import React from 'react';
-import { Navbar, Nav } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Navbar, Nav, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import './index.css';
 
 export default function NavigationBar() {
+
+    const { currentUser, googleSignin, signout } = useAuth();
+    const [errors, setErrors] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const handleSignIn = async () => {
+
+        try {
+            setLoading(true);
+            await googleSignin();
+            setLoading(false);
+        } catch (e) {
+            setErrors('Failed to Sign in. Try Again.');
+            setLoading(false);
+        }
+    };
+
+    const handleSignOut = async () => {
+        try {
+            setLoading(true);
+            await signout();
+            setLoading(false);
+        } catch (e) {
+            setErrors('Failed to Sign Out. Try Again.');
+            setLoading(false);
+        }
+    };
+
     return (
         <>
             <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
@@ -14,9 +43,23 @@ export default function NavigationBar() {
                         <Nav.Link as={Link} to="/" >Home</Nav.Link>
                     </Nav>
                     <Nav>
-                        <Nav.Link as={Link} to="/signup" >Sign Up</Nav.Link>
-                        <Nav.Link as={Link} to="/login" >Login</Nav.Link>
-                        <Nav.Link as={Link} to="/logout" >Logout</Nav.Link>
+                        {
+                            !!currentUser ?
+                                <Button
+                                    variant="outline-primary"
+                                    disabled={loading}
+                                    onClick={handleSignOut}
+                                >
+                                    Sign Out
+                                </Button> :
+                                <Button
+                                    variant="outline-primary"
+                                    disabled={loading}
+                                    onClick={handleSignIn}
+                                >
+                                    Sign In
+                                </Button>
+                        }
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>

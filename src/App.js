@@ -10,22 +10,25 @@ import ContactInformation from './components/ContactInformation';
 import Update from './components/Update';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container } from 'react-bootstrap';
+import { AuthProvider } from './contexts/AuthContext';
 
 function App() {
 	return (
 		<>
 			<Router>
-				<Navbar />
-				<Container>
-					<Switch>
-						<Route path='/' exact component={Home} />
-						<Route path='/register' component={Form} />
-						<Route path='/personal-information' component={PersonalInformation} />
-						<Route path='/degree-information' component={DegreeInformation} />
-						<Route path='/contact-information' component={ContactInformation} />
-						<Route path='/update' component={Update} />
-					</Switch>
-				</Container>
+				<AuthProvider>
+					<Navbar />
+					<Container>
+						<Switch>
+							<Route path='/' exact component={Home} />
+							<Route path='/register' component={Form} />
+							<Route path='/personal-information' component={PersonalInformation} />
+							<Route path='/degree-information' component={DegreeInformation} />
+							<Route path='/contact-information' component={ContactInformation} />
+							<Route path='/update' component={Update} />
+						</Switch>
+					</Container>
+				</AuthProvider>
 			</Router>
 		</>
 	);

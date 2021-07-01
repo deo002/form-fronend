@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import schema from './Schema';
@@ -6,7 +6,7 @@ import Input from '../Input';
 import SelectInput from '../SelectInput';
 import DatePicker from '../DatePicker';
 import PrimaryButton from '../PrimaryButton';
-import FormComponent from '../FormComponent';
+import FormComponentMultipart from '../FormComponentMultipart';
 import TextAreaBox from '../TextArea';
 import Heading from '../Heading';
 import { Row, Col } from 'react-bootstrap';
@@ -14,6 +14,9 @@ import States from '../States.json';
 import StatesDistricts from '../States-Districts.json';
 import FileUpload from '../FileUpload';
 import CheckBox from '../CheckBox';
+import { useAuth } from '../../contexts/AuthContext';
+import apiCall from './ApiCall';
+import { useHistory } from 'react-router-dom';
 
 export default function Form() {
 
@@ -25,14 +28,118 @@ export default function Form() {
     const watchState = watch("state", "");
     const watchWorkplaceState = watch("workplaceState", "");
 
-    const onSubmit = (data) => {
-        console.log(data);
+    const history = useHistory();
+
+    const { currentUser, getToken } = useAuth();
+
+    const [err, setErr] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const onSubmit = async (data) => {
+
+        try {
+            setLoading(true);
+            const {
+                name,
+                fathersName,
+                mothersName,
+                nationality,
+                residentState,
+                aadharno,
+                gender,
+                employment,
+                category,
+                birthdate,
+                universityName,
+                collegeName,
+                degree,
+                datePassed,
+                mobileNumber,
+                alternateMobileNumber,
+                emailId,
+                alternateEmailId,
+                address,
+                state,
+                district,
+                zipcode,
+                workplaceAddress,
+                workplaceState,
+                workplaceZipcode,
+                workplaceDistrict,
+                photo,
+                signature,
+                degreeCertificate,
+                transcript,
+                aadharCard,
+                idCard,
+                dobProof,
+                affidavitProof,
+                affidavitMagistrate,
+                fir
+            } = data;
+
+            const idToken = await getToken();
+            const id = currentUser.uid;
+
+            const payload = new FormData();
+
+            payload.append('name', name);
+            payload.append('fathersName', fathersName);
+            payload.append('mothersName', mothersName);
+            payload.append('nationality', nationality);
+            payload.append('residentState', residentState);
+            payload.append('aadharno', aadharno);
+            payload.append('gender', gender);
+            payload.append('employment', employment);
+            payload.append('category', category);
+            payload.append('birthdate', birthdate);
+            payload.append('universityName', universityName);
+            payload.append('collegeName', collegeName);
+            payload.append('degree', degree);
+            payload.append('datePassed', datePassed);
+            payload.append('mobileNumber', mobileNumber);
+            payload.append('alternateMobileNumber', alternateMobileNumber);
+            payload.append('emailId', emailId);
+            payload.append('alternateEmailId', alternateEmailId);
+            payload.append('address', address);
+            payload.append('state', state);
+            payload.append('district', district);
+            payload.append('zipcode', zipcode);
+            payload.append('workplaceAddress', workplaceAddress);
+            payload.append('workplaceState', workplaceState);
+            payload.append('workplaceZipcode', workplaceZipcode);
+            payload.append('workplaceDistrict', workplaceDistrict);
+            payload.append('id', id);
+            payload.append('photo', photo[0]);
+            payload.append('signature', signature[0]);
+            payload.append('transcript', transcript[0]);
+            payload.append('aadharCard', aadharCard[0]);
+            payload.append('idCard', idCard[0]);
+            payload.append('dobProof', dobProof[0]);
+            payload.append('affidavitProof', affidavitProof[0]);
+            payload.append('affidavitMagistrate', affidavitMagistrate[0]);
+            payload.append('fir', fir[0]);
+            payload.append('degreeCertificate', degreeCertificate[0]);
+            //  https://httpbin.org/anything
+            const res = await apiCall('http://localhost:1337/api/doctor', payload, idToken);
+
+            if (!!res.error) {
+                throw Error(res.error);
+            }
+
+            setLoading(false);
+            history.push('/update');
+        } catch (e) {
+            setLoading(false);
+            setErr(e.message);
+        }
+
     };
 
     return (
         <>
             <Heading>Personal Information</Heading>
-            <FormComponent onSubmit={handleSubmit(onSubmit)}>
+            <FormComponentMultipart onSubmit={handleSubmit(onSubmit)}>
                 <Row>
                     <Input
                         label="Applicant's Name"
@@ -294,8 +401,13 @@ export default function Form() {
                         error={errors.fir}
                     />
                 </Row>
-                <PrimaryButton label="Submit" />
-            </FormComponent>
+                <CheckBox
+                    label="I hereby declare that all the information given by me in this application is true and correct to the best of my knowledge and belief."
+                    hookForm={register('declaration')}
+                    error={errors.declaration}
+                />
+                <PrimaryButton state={loading} label="Submit" />
+            </FormComponentMultipart>
         </>
     );
 

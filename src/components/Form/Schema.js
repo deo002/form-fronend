@@ -202,6 +202,7 @@ const schema = yup.object().shape({
                 return false;
             return true;
         }),
+    declaration: yup.boolean().oneOf([true], 'The terms and conditions must be accepted.')
 });
 
 export default schema;
